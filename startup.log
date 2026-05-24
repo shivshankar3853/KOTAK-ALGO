@@ -1,0 +1,23 @@
+◇ injected env (13) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+2026-05-24T13:34:16.392Z [INFO] ⬇️ Initializing Kotak Algo System...
+🔄 Connecting MongoDB...
+✅ MongoDB Atlas Connected
+🟡 Redis connecting...
+✅ Redis Connected
+🔑 Kotak Token Loaded
+2026-05-24T13:34:17.273Z [INFO] 🧠 SESSION RAW CHECK:
+🔐 Session Updated: {
+  token: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0MGI5M2Y0NS0wYjcxLTQ1ZTItODFkMy1hN2QyY2FkZGU5NDQiLCJpc3MiOiJsb2dpbi1zZXJ2aWNlIiwic3ViIjoiN2YwNDI2MDctYjk3Zi00ODVjLTg4NjgtYjYzNmUyMTkxZjE5IiwidWNjIjoiWFZIN04iLCJuYXAiOiIiLCJ5Y2UiOiJlWVxcNiBcdTAwM2U9NT9wXHUwMDA2XHUwMDAwXHUwMDAwcVx1MDAwMFx1MDAxMGIiLCJjYXRlZ29yaXNhdGlvbiI6IiIsInNjb3BlIjpbIlRyYWRlIl0sImV4cCI6MTc3OTY0NzQwMCwiaWF0IjoxNzc5NjI2NjAzLCJmZXRjaGNhY2hpbmdydWxlIjowfQ.ilElsmdmYF64L_kJhgLiu2r90v6-4RSutAMXlO-IN56Rli_jpKlVfyiLdQr04F3MbRvy-HwKX8JgmnUcVmMI54qyntp8pzUtghpOGWJ7cT-8MqBLdZJTiXSZP6vr6vrAXp9BJHTECGgvHn82n2bFFHIC5FVVgS3wOSZV3VP9zoAsE-fwkZGlBQv1D4ZDjJwKAwuIOfSTSt9GNKYr1kd7D_z6LiijW6jzfsE7gypLBNSQ5GspTfcxy92nyIfwPkItSSjxguXpFFfdodKEIlI7fiLsR5CnctHBwLCXV3_lwqm_Lzw-DHJgNJhabYJ3h3_ySEl8EPbtKHO1ztsWZl4NzA',
+  sid: 'b5f39c98-ab0c-48f4-99a6-5961573282aa',
+  baseUrl: 'https://e21.kotaksecurities.com'
+}
+2026-05-24T13:34:17.275Z [INFO] 🔐 Session restored from saved token
+2026-05-24T13:34:17.276Z [INFO] 🧠 SESSION ACTIVE:
+📁 Instrument CSV already exists (Updated < 7 days ago)
+2026-05-24T13:34:17.277Z [INFO] ✅ System ready (Kotak Trade API)
+2026-05-24T13:34:17.277Z [INFO] ⏱️ Starting background services...
+2026-05-24T13:34:17.278Z [INFO] 🔐 Using saved session
+2026-05-24T13:34:17.279Z [INFO] 🔌 Connecting WS...
+2026-05-24T13:34:17.294Z [INFO] 🚀 Server running on port 3000
+2026-05-24T13:34:17.548Z [INFO] 📡 WS Connected
