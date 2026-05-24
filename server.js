@@ -240,6 +240,25 @@ app.get("/", (req, res) => res.send("🚀 Kotak Algo Server Running"));
 app.get("/login", (req, res) => res.send("Use POST /login to authenticate"));
 app.post("/login", login);
 
+app.get("/profile", async (req, res) => {
+  try {
+    const profile = await getProfile();
+
+    res.json({
+      loggedIn: Boolean(profile?.loggedIn),
+      name: profile?.user_name || null,
+      clientId: profile?.user_id || null
+    });
+  } catch (err) {
+    logger.error(`Profile route error: ${err.message}`);
+    res.status(500).json({
+      loggedIn: false,
+      name: null,
+      clientId: null
+    });
+  }
+});
+
 // ================= WEBHOOK =================
 app.post("/webhook", async (req, res) => {
   try {
