@@ -5,6 +5,7 @@ const {
 } = require("./wsService");
 
 const logger = require("./logger");
+const { resolveTargetPriceFromTrade } = require("./targetLogic");
 
 async function monitorTargets() {
 
@@ -18,80 +19,53 @@ async function monitorTargets() {
 
       try {
 
-        const ltp = getTick(trade.symbol);
+        const symbol = trade.instrument || trade.symbol;
+        const ltp = getTick(symbol);
 
-        if (!ltp) {
+        if (!ltp || !trade.price || !trade.quantity) {
           continue;
         }
 
-        // BUY TARGET
-        if (
-          trade.side === "BUY" &&
-          trade.targetPrice &&
-          ltp >= trade.targetPrice
-        ) {
+        const targetPrice = resolveTargetPriceFromTrade(trade);
 
-          logger.info(
-            `🎯 BUY target hit: ${trade.symbol} @ ${ltp}`
-          );
-
-          trade.status = "TARGET_HIT";
-
-          trade.exitPrice = ltp;
-
-          trade.exitTime = new Date();
-
-          trade.pnl =
-            (ltp - trade.entryPrice) *
-            trade.quantity;
-
-          await trade.save();
-
-          if (global.io) {
-
-            global.io.emit(
-              "targetHit",
-              {
-                symbol: trade.symbol,
-                ltp
-              }
-            );
-          }
+        if (!targetPrice) {
+          continue;
         }
 
-        // SELL TARGET
-        if (
-          trade.side === "SELL" &&
-          trade.targetPrice &&
-          ltp <= trade.targetPrice
-        ) {
+        if (!trade.targetPrice) {
+          trade.targetPrice = targetPrice;
+        }
 
-          logger.info(
-            `🎯 SELL target hit: ${trade.symbol} @ ${ltp}`
-          );
+        const targetReached =
+          trade.side === "BUY"
+            ? ltp >= trade.targetPrice
+            : ltp <= trade.targetPrice;
 
-          trade.status = "TARGET_HIT";
+        if (!targetReached) {
+          continue;
+        }
 
-          trade.exitPrice = ltp;
+        logger.info(
+          `🎯 ${trade.side} target hit: ${symbol} @ ${ltp}`
+        );
 
-          trade.exitTime = new Date();
+        trade.status = "TARGET_HIT";
+        trade.exitPrice = ltp;
+        trade.exitTime = new Date();
+        trade.pnl =
+          trade.side === "BUY"
+            ? (ltp - trade.price) * trade.quantity
+            : (trade.price - ltp) * trade.quantity;
 
-          trade.pnl =
-            (trade.entryPrice - ltp) *
-            trade.quantity;
+        await trade.save();
 
-          await trade.save();
-
-          if (global.io) {
-
-            global.io.emit(
-              "targetHit",
-              {
-                symbol: trade.symbol,
-                ltp
-              }
-            );
-          }
+        if (global.io) {
+          global.io.emit("targetHit", {
+            symbol,
+            ltp,
+            targetPrice: trade.targetPrice,
+            pnl: trade.pnl
+          });
         }
 
       } catch (err) {

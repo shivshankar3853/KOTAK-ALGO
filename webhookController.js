@@ -40,7 +40,11 @@ function normalizeSignal(signal) {
       P: signal.P || signal.product || "NRML",
       VL: signal.VL || signal.validity || "DAY",
       OT: signal.OT || signal.order_type || "MARKET",
-      PRICE: signal.PRICE || signal.price || 0
+      PRICE: signal.PRICE || signal.price || 0,
+      targetPoints:
+        signal.targetPoints ??
+        signal.target_points ??
+        signal.target
     };
   } catch (err) {
     console.log("❌ Normalize error:", err.message);
@@ -66,6 +70,7 @@ function convertTV(signal) {
       price: Number(signal.PRICE || 0),
       order_type: signal.OT || "MARKET",
       transaction_type: signal.TT,
+      targetPoints: signal.targetPoints,
       disclosed_quantity: 0
     };
   } catch (err) {

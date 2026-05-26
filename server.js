@@ -306,6 +306,20 @@ app.get("/status", (req, res) => {
   });
 });
 
+app.get("/control", (req, res) => {
+  res.json({ trading: isTradingEnabled() });
+});
+
+app.get("/start", (req, res) => {
+  startTrading();
+  res.json({ trading: true });
+});
+
+app.get("/stop", (req, res) => {
+  stopTrading();
+  res.json({ trading: false });
+});
+
 // ================= HEALTH =================
 app.get("/health", (req, res) => {
   res.json({
@@ -373,7 +387,14 @@ async function startServer() {
   });
 
   server.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      logger.error(`Port ${PORT} is already in use. Another server instance is running.`);
+      process.exit(1);
+      return;
+    }
+
     logger.error(`HTTP Server error: ${err.message}`);
+    process.exit(1);
   });
 }
 

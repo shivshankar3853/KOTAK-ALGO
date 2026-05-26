@@ -57,11 +57,15 @@ function cleanupWS() {
 
   if (ws) {
     try {
-  if (ws && ws.readyState !== WebSocket.CLOSED) {
-    ws.removeAllListeners();
-    ws.terminate();
-  }
-} catch (_) {}
+      ws.removeAllListeners();
+
+      if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+        ws.terminate();
+      } else if (ws.readyState !== WebSocket.CLOSED) {
+        ws.close();
+      }
+    } catch (_) {}
+
     ws = null;
   }
 }
@@ -102,17 +106,20 @@ async function connectWS() {
 
     logger.info("🔌 Connecting WS...");
 
-    ws = new WebSocket(wsUrl);
+    const currentSocket = new WebSocket(wsUrl);
+    ws = currentSocket;
 
     // ================= OPEN =================
-    ws.on("open", () => {
+    currentSocket.on("open", () => {
+
+      if (currentSocket !== ws) return;
 
       connected = true;
       lastPong = Date.now();
 
       logger.info("📡 WS Connected");
 
-      ws.send(JSON.stringify({
+      currentSocket.send(JSON.stringify({
         type: "subscribe",
         token
       }));
@@ -141,12 +148,15 @@ async function connectWS() {
     });
 
     // ================= PONG =================
-    ws.on("pong", () => {
+    currentSocket.on("pong", () => {
+      if (currentSocket !== ws) return;
       lastPong = Date.now();
     });
 
     // ================= MESSAGE =================
-    ws.on("message", async (data) => {
+    currentSocket.on("message", async (data) => {
+
+      if (currentSocket !== ws) return;
 
       try {
 
@@ -191,7 +201,9 @@ async function connectWS() {
     });
 
     // ================= CLOSE =================
-    ws.on("close", () => {
+    currentSocket.on("close", () => {
+
+      if (currentSocket !== ws) return;
 
       connected = false;
 
@@ -202,7 +214,9 @@ async function connectWS() {
     });
 
     // ================= ERROR =================
-    ws.on("error", (err) => {
+    currentSocket.on("error", (err) => {
+
+      if (currentSocket !== ws) return;
 
       connected = false;
 

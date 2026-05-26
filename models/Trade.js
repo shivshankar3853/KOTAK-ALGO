@@ -9,9 +9,12 @@ const tradeSchema = new mongoose.Schema({
   side: String,
   quantity: Number,
   instrument: String,
+  symbol: String,
   orderId: String,
 
   price: Number,
+  targetPoints: { type: Number, default: 10 },
+  targetPrice: { type: Number, default: 0 },
 
   status: { type: String, default: "OPEN" },
   pnl: { type: Number, default: 0 },

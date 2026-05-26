@@ -17,6 +17,11 @@ const {
   setPostTradeCooldown
 } = require("./ltpEngine");
 
+const {
+  calculateTargetPrice,
+  normalizeTargetPoints
+} = require("./targetLogic");
+
 // ==============================
 // 🚀 PLACE ORDER
 // ==============================
@@ -156,6 +161,9 @@ async function placeOrder(order) {
       tradePrice = 0;
     }
 
+    const targetPoints = normalizeTargetPoints(order.targetPoints);
+    const targetPrice = calculateTargetPrice(tradePrice, action, targetPoints);
+
     // ==============================
     // ⚠️ DB CHECK
     // ==============================
@@ -174,10 +182,13 @@ async function placeOrder(order) {
         side: "BUY",
         quantity,
         instrument: symbol,
+        symbol,
         orderId: orderData?.nOrdNo || "NA",
         price: tradePrice,
         status: "OPEN",
         time: new Date(),
+        targetPoints,
+        targetPrice,
         highestPrice: tradePrice,
         trailingSL: tradePrice > 0 ? tradePrice - 10 : 0
       });
